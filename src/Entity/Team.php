@@ -2,70 +2,134 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiProperty;
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\UuidInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\TeamRepository")
+ *
+ * @ApiResource(
+ *     normalizationContext={"groups"={"read"}, "enable_max_depth"=true},
+ *     denormalizationContext={"groups"={"write"}, "enable_max_depth"=true}
+ * )
+ * @ORM\Entity(repositoryClass="App\Repository\ExampleEntityRepository")
  */
 class Team
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     *
+     * @var UuidInterface
+     *
+     * @ApiProperty(
+     * 	   identifier=true,
+     *     attributes={
+     *         "openapi_context"={
+     *         	   "description" = "The UUID identifier of this object",
+     *             "type"="string",
+     *             "format"="uuid",
+     *             "example"="e2984465-190a-4562-829e-a8cca81aa35d"
+     *         }
+     *     }
+     * )
+     *
+     * @Groups({"read"})
+     * @ORM\Id
+     * @ORM\Column(type="uuid", unique=true)
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
      */
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Organisation", inversedBy="teams")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"read","write"})
+     * @MaxDepth(1)
      */
     private $organisation;
 
     /**
+     * @Groups({"read","write"})
      * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="teams")
+     * @MaxDepth(1)
      */
     private $members;
 
     /**
+     * @Groups({"read","write"})
      * @ORM\Column(type="string", length=255)
+     * @Assert\Length(
+     *     max = 255
+     * )
+     * @Assert\NotBlank
      */
     private $name;
 
     /**
+     * @Groups({"read","write"})
      * @ORM\Column(type="text", nullable=true)
      */
     private $description;
 
     /**
+     * @Groups({"read","write"})
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length(
+     *     max = 255
+     * )
      */
     private $github;
 
     /**
+     * @Groups({"read","write"})
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length(
+     *     max = 255
+     * )
      */
     private $gitlab;
 
     /**
+     * @Groups({"read","write"})
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length(
+     *     max = 255
+     * )
      */
     private $bitbucket;
-    
+
     /**
+     * @Groups({"read","write"})
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length(
+     *     max = 255
+     * )
      */
     private $githubId;
-    
+
     /**
+     *
+     * @Groups({"read","write"})
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length(
+     *     max = 255
+     * )
      */
     private $gitlabId;
-    
+
     /**
+     *
+     * @Groups({"read","write"})
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length(
+     *     max = 255
+     * )
      */
     private $bitbucketId;
 
