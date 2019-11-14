@@ -2,97 +2,172 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiProperty;
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @ORM\Table(name="socialuser")
+ * @ApiResource(
+ *     normalizationContext={"groups"={"read"}, "enable_max_depth"=true},
+ *     denormalizationContext={"groups"={"write"}, "enable_max_depth"=true}
+ * )
+ * @ORM\Entity(repositoryClass="App\Repository\ExampleEntityRepository")
+ *
  */
 class User implements UserInterface
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @var UuidInterface
+     *
+     * @ApiProperty(
+     * 	   identifier=true,
+     *     attributes={
+     *         "openapi_context"={
+     *         	   "description" = "The UUID identifier of this object",
+     *             "type"="string",
+     *             "format"="uuid",
+     *             "example"="e2984465-190a-4562-829e-a8cca81aa35d"
+     *         }
+     *     }
+     * )
+     *
+     * @Groups({"read"})
+     * @ORM\Id
+     * @ORM\Column(type="uuid", unique=true)
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
      */
 	private $id;
 	
 	/**
+     * @Groups({"read","write"})
 	 * @ORM\Column(type="string", length=255, nullable=true)
-	 */
+	 * @Assert\Length(
+     *     max = 255
+     * )
+     */
 	private $username;
 	
 	/**
+     * @Groups({"read","write"})
 	 * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length(
+     *     max = 255
+     * )
 	 */
 	private $name;
 	
 	/**
+     * @Groups({"read","write"})
 	 * @ORM\Column(type="text", nullable=true)
 	 */
 	private $description;
 	
 	/**
+     * @Groups({"read","write"})
 	 * @ORM\Column(type="string", length=255, nullable=true)
-	 */
+	 * @Assert\Length(
+     *     max = 255
+     * )
+     */
 	private $avatar;
 
     /**
+     * @Groups({"read","write"})
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Assert\Length(
+     *     max = 255
+     * )
+     * @Assert\NotBlank
      */
     private $email;
 
     /**
+     * @Groups({"read","write"})
      * @ORM\Column(type="json")
      */
     private $roles = [];
 
     /**
+     * @Groups({"read","write"})
      * @var string The hashed password
      * @ORM\Column(type="string", nullable=true)
      */
     private $password;
 
     /**
+     * @Groups({"read","write"})
      * @ORM\ManyToMany(targetEntity="App\Entity\Organisation", mappedBy="users")
+     * @MaxDepth(1)
      */
     private $organisations;
 
     /**
+     * @Groups({"read","write"})
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length(
+     *     max = 255
+     * )
      */
     private $githubId;
     
     /**
+     * @Groups({"read","write"})
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length (
+     *    max = 255
+     * )
      */
     private $githubToken;
 
     /**
+     * @Groups({"read","write"})
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length (
+     *    max = 255
+     * )
      */
     private $gitlabId;
     
     /**
+     * @Groups({"read","write"})
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length (
+     *    max = 255
+     * )
      */
     private $gitlabToken;
 
     /**
+     * @Groups({"read","write"})
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length (
+     *    max = 255
+     * )
      */
     private $bitbucketId;
 
     /**
+     * @Groups({"read","write"})
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length (
+     *    max = 255
+     * )
      */
     private $bitbucketToken;
 
     /**
+     * @Groups({"read","write"})
      * @ORM\ManyToMany(targetEntity="App\Entity\Team", mappedBy="members")
+     * @MaxDepth(1)
      */
     private $teams;
 
