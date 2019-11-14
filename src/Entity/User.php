@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiProperty;
-use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Validator\Constraints as Assert;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -15,10 +15,7 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @ORM\Table(name="socialuser")
- * @ApiResource(
- *     normalizationContext={"groups"={"read"}, "enable_max_depth"=true},
- *     denormalizationContext={"groups"={"write"}, "enable_max_depth"=true}
- * )
+ * 
  * @ORM\Entity(repositoryClass="App\Repository\ExampleEntityRepository")
  *
  */
@@ -27,17 +24,6 @@ class User implements UserInterface
     /**
      * @var UuidInterface
      *
-     * @ApiProperty(
-     * 	   identifier=true,
-     *     attributes={
-     *         "openapi_context"={
-     *         	   "description" = "The UUID identifier of this object",
-     *             "type"="string",
-     *             "format"="uuid",
-     *             "example"="e2984465-190a-4562-829e-a8cca81aa35d"
-     *         }
-     *     }
-     * )
      *
      * @Groups({"read"})
      * @ORM\Id
